@@ -55,15 +55,19 @@
 				"outputs": [
 					{
 						"referenceName": "Parquet1",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"Mfilename": {
+								"value": "@variables('Filename')",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			},
 			{
 				"name": "Parquet_2_snowflake",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "TSV_2_Parquet",
@@ -85,7 +89,7 @@
 						"type": "ParquetSource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
+							"recursive": false,
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -108,8 +112,14 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Parquet2",
-						"type": "DatasetReference"
+						"referenceName": "Parquet1",
+						"type": "DatasetReference",
+						"parameters": {
+							"Mfilename": {
+								"value": "@variables('Filename')",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
