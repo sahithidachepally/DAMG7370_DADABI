@@ -132,7 +132,8 @@
 		],
 		"variables": {
 			"Filename": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "Pet_Licensce"
 			}
 		},
 		"annotations": []
