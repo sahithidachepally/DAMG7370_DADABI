@@ -90,7 +90,6 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": false,
-							"wildcardFileName": "*",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -106,7 +105,7 @@
 					"enableStaging": true,
 					"stagingSettings": {
 						"linkedServiceName": {
-							"referenceName": "_spring25damgblobstorage_",
+							"referenceName": "AzureBlobStorage1",
 							"type": "LinkedServiceReference"
 						}
 					}
@@ -125,7 +124,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "SnowflakeTable2",
+						"referenceName": "SnowflakeTable1",
 						"type": "DatasetReference"
 					}
 				]
@@ -133,7 +132,8 @@
 		],
 		"variables": {
 			"Filename": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "Pet_Licensce"
 			}
 		},
 		"annotations": []
