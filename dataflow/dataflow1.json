@@ -1,0 +1,102 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Data_Pet_License",
+						"type": "DatasetReference"
+					},
+					"name": "readTSVfile"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Seattle_Pet_License_Stage",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     Job_ID as string (\"10\")",
+				"}",
+				"source(output(",
+				"          {License Issue Date} as string,",
+				"          {License Number} as string,",
+				"          {Animal's Name} as string,",
+				"          Species as string,",
+				"          {Primary Breed} as string,",
+				"          {Secondary Breed} as string,",
+				"          {ZIP Code} as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> readTSVfile",
+				"readTSVfile derive(Lic_Issue_Date = toDate({License Issue Date}, 'MMMM dd yyyy','en-US'),",
+				"          {Secondary Breed} = iifNull({Secondary Breed}, 'Unknown'),",
+				"          Zip_Code = lpad(toString({ZIP Code}), 5,'0'),",
+				"          Animal_Name = translate({Animal's Name}, '()[]', ' '),",
+				"          Species = upper(Species),",
+				"          License_Number = toInteger(translate({License Number},'S','')),",
+				"          Load_Date = currentDate(),",
+				"          Job_ID = $Job_ID) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          Species,",
+				"          {Primary Breed},",
+				"          {Secondary Breed},",
+				"          Lic_Issue_Date,",
+				"          Zip_Code,",
+				"          Animal_Name,",
+				"          License_Number,",
+				"          Load_Date,",
+				"          Job_ID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          LICENSE_ISSUE_DATE as string,",
+				"          LICENSE_NUMBER as string,",
+				"          ANIMAL_NAME as string,",
+				"          SPECIES as string,",
+				"          PRIMARY_BREED as string,",
+				"          SECONDARY_BREED as string,",
+				"          ZIP_CODE as string,",
+				"          DI_JOB_ID as string,",
+				"          DI_LOAD_DT as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          LICENSE_ISSUE_DATE = Lic_Issue_Date,",
+				"          LICENSE_NUMBER = License_Number,",
+				"          ANIMAL_NAME = Animal_Name,",
+				"          SPECIES = Species,",
+				"          PRIMARY_BREED = {Primary Breed},",
+				"          SECONDARY_BREED = {Secondary Breed},",
+				"          ZIP_CODE = Zip_Code,",
+				"          DI_JOB_ID = Job_ID,",
+				"          DI_LOAD_DT = Load_Date",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
