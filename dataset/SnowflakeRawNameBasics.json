@@ -1,0 +1,16 @@
+{
+	"name": "SnowflakeRawNameBasics",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SnowflakeWorkshop",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [],
+		"typeProperties": {
+			"schema": "DATA_SCHEMA",
+			"table": "RAWSTAGE_NAME_BASICS"
+		}
+	}
+}
